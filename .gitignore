@@ -1,0 +1,10 @@
+node_modules/
+dep/
+creds/
+__pycache__/
+InnerVYoutube/older
+*.pyc
+*.pyo
+*.key
+*/.DS_Store
+.DS_Store
