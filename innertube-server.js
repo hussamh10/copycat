@@ -1,6 +1,9 @@
 const WebSocket = require('ws');
 const { Innertube, UniversalCache } = require('youtubei.js');
-const wss = new WebSocket.Server({ port: 8080 });
+// get user name and port from command line arguments
+const user_port = process.argv[2];
+console.log(`User port: ${user_port}`);
+const wss = new WebSocket.Server({ port: user_port });
 
 let yt = null; // Global YouTube client instance
 
@@ -47,6 +50,7 @@ async function getUpNextRecommendations(yt, videoId) {
 }
 
 async function signinBlank() {
+    console.log('Signing in with blank credentials...');
     yt = await Innertube.create({});
   }
 
@@ -116,4 +120,4 @@ wss.on('connection', function connection(ws) {
   });
 });
 
-console.log('WebSocket server started on port 8080. Awaiting connections...');
+console.log('WebSocket server started on port ' + user_port);

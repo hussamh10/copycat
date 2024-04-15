@@ -4,10 +4,10 @@ import numpy as np
 import warnings
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
-
 class FixationPuppet(Puppet):
     def __init__(self, file):
         super().__init__()   
+        self.high = True
         file = open(f"res/{file}.txt", "r")
         self.keywords = file.read().split(", ")
         file.close()
@@ -33,17 +33,3 @@ class FixationPuppet(Puppet):
     def decisionFunction(self, recommendations):
         fixations = list(map(lambda x: self.getFixation(x), recommendations))
         return fixations
-
-    def scoreFunction(self, videos):
-        # select the video with the highest fixation, videos is a dictionary
-        # with videoId as key and fixation as value
-        
-        maxFixation = 0
-        selected = None
-        for videoId, fixation in videos.items():
-            if fixation > maxFixation:
-                maxFixation = fixation
-                selected = videoId
-
-        return selected
-        

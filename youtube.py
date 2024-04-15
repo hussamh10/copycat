@@ -6,7 +6,7 @@ class API:
         self.ws_url = ws_url
 
     def signinBlank(self):
-        print("Signing in...")
+        print("Signing in blank...")
         signin_response = self._call_function_and_wait("signinBlank")
         if signin_response.get('status') == 'success':
             print("Signed in successfully. Proceeding with next operations.")
@@ -27,13 +27,22 @@ class API:
                 videos.append(post['id'])
         return videos
 
-    def getTranscript(self, video_id): 
+    def getTranscript(self, video_id, listed=False): 
         try:
-            transcript = self._call_function("getTranscript", [video_id])
-            transcript = transcript['result']
-            transcript = ' '.join(transcript)
+            if listed:
+                transcript = self._call_function("getTranscript", [video_id])
+                transcript = transcript['result']
+                if transcript == '':
+                    transcript = ["blank"]
+            else:
+                transcript = self._call_function("getTranscript", [video_id])
+                transcript = transcript['result']
+                transcript = ' '.join(transcript)
         except:
-            transcript = "good good"
+            if listed:
+                transcript = ["blank"]
+            else:
+                transcript = "blank"
         return transcript
     
     def addToWatchHistory(self, video_id):
@@ -44,9 +53,12 @@ class API:
         return recommendations['result']
 
     def getVideoInfo(self, video_id):
-        info = self._call_function("getInfo", [video_id])
-        info = info['result']
-
+        try:
+            info = self._call_function("getInfo", [video_id])
+            info = info['result']
+        except Exception as e:
+            print("Error getting video info" + str(e))
+            info = {}
         safe_info = {
         'title': info.get('basic_info', {}).get('title', 'Unknown Title'),
         'duration': info.get('basic_info', {}).get('duration', 'Unknown Duration'),
@@ -95,6 +107,5 @@ class API:
             elif response_data.get('status') == 'error':
                 print("Error during the operation. Exiting...")
                 break
-
         ws.close()
         return response_data

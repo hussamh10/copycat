@@ -7,6 +7,10 @@ warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 
 class NegativePuppet(Puppet):
+    def __init__(self):
+        super().__init__()
+        self.high = False   
+
     def analyzeSentiment(self, sentence):
         sid_obj = SIA()
         sentiment_dict = sid_obj.polarity_scores(sentence)
@@ -26,13 +30,3 @@ class NegativePuppet(Puppet):
     def decisionFunction(self, recommendations):
         sentiments = list(map(lambda x: self.getSentiment(x), recommendations))
         return sentiments
-
-    def scoreFunction(self, videos):
-        minScore = 1
-        selected = None
-        for videoId, score in videos.items():
-            if score < minScore:
-                minScore = score
-                selected = videoId
-
-        return selected
